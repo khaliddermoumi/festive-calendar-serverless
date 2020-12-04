@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" href="img/favicon.png" type="image/png" />
+  <title>Azure Serverless &amp; Cognitive Demo</title>
+
+  <!--
+    Vue.js viewer client webapp
+    Ben Coleman, Aug 2018
+  -->
+
+  <!-- Vue.js -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js"></script>
+
+  <!-- Azure Storage library for JS -->
+  <script src="lib/azure-storage.common.js"></script>
+  <script src="lib/azure-storage.blob.js"></script>
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <h1 id='title'>Azure Serverless &amp; Cognitive Demo</h1>
+  <img class='img-left' src='img/cognitive.svg'/>
+  <img class='img-right' src='img/functions.svg'/>
+
+  <br/>
+
+  <!-- Root Vue app component -->
+  <div id="app">
+    <spinner v-if="updating"></spinner>
+
+    <settings v-if="!storageAccount"></settings>
+
+    <p>
+      Oldest Person's Age: <span>{{oldest}}</span> - <a :href='"#" + oldestPhotoReference'>Photo</a>
+    </p>
+    <p>
+      Youngest Person's Age: <span>{{youngest}}</span> - <a :href='"#" + youngestPhotoReference'>Photo</a>
+    </p>
+    <transition-group name="photolist">
+      <photo
+        v-for="item in results"
+        :key="item.timestamp"
+        :data="item">
+      </photo>
+    </transition-group>
+  </div>
+
+  <!-- Main Vue app & Vue components -->
+  <script src="config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

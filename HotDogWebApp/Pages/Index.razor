@@ -1,0 +1,49 @@
+﻿@page "/"
+@using System.IO
+@inject IHttpClientFactory ClientFactory
+
+
+<p>A single file input that uploads automatically on file selection</p>
+
+<InputFile OnChange="@HandleSelection"/>
+
+<p>@status</p>
+
+@code {
+    string status;
+
+    private async Task HandleSelection(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+
+        var httpClient = ClientFactory.CreateClient("HotDogApi");
+
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+
+        var s = new MemoryStream();
+        await s.WriteAsync(buffer);
+        s.Position = 0;
+
+        var content = new MultipartFormDataContent
+        {
+            {
+                new ByteArrayContent(s.GetBuffer()),
+                "\"upload\"",
+                file.Name
+            }
+        };
+
+        await httpClient.PostAsync("upload", content);
+
+        status = $"Finished loading {file.Size} bytes from {file.Name}";
+        }
+        catch (System.Exception ex)
+        {
+            status = ex.Message;
+            throw;
+        }        
+    }
+}
