@@ -7,6 +7,7 @@
     "AzureSignalRConnectionString": "Endpoint=https://v1-joaogoncalves-signalr.service.signalr.net;AccessKey=w+YjbnFVJuZd2hoVuxQoXQiBlozhsUO1+LtTyfHeRQU=;Version=1.0;"
   },
   "Host": {
-    "CORS": "*"
+    "CORS": "*",
+    "CORSCredentials": false
   }
 }
