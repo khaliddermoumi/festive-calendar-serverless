@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "AzureStorage:ConnectionString": "UseDevelopmentStorage=true",
+    "AzureSignalRConnectionString": "Endpoint=https://v1-joaogoncalves-signalr.service.signalr.net;AccessKey=w+YjbnFVJuZd2hoVuxQoXQiBlozhsUO1+LtTyfHeRQU=;Version=1.0;"
+  },
+  "Host": {
+    "CORS": "*",
+    "CORSCredentials": false
+  }
+}
