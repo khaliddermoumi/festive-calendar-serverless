@@ -1,16 +1,60 @@
 ﻿@page "/counter"
 
-<h1>Counter</h1>
+@using Microsoft.AspNetCore.SignalR.Client
 
-<p>Current count: @currentCount</p>
+<h1>@hubConnection.State</h1>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<h3>Predictions</h3>
+
+<table>
+    <tr>
+        <th>
+            Image
+        </th>
+        <th>
+            Score
+        </th>
+    </tr>
+    @foreach (var message in messages)
+    {
+        <tr>
+            <td>
+                <img src="@message.ImageUrl">
+                @message.ImageUrl
+                </td>
+            <td>@message.Message</td>
+        </tr>
+    }
+</table>
+
 
 @code {
-    private int currentCount = 0;
+    private HubConnection hubConnection;
+    private List<ClientMessage> messages = new List<ClientMessage>();
 
-    private void IncrementCount()
+
+    private readonly string functionAppBaseUri = "http://localhost:7071/api/"; //URL for function app. Leave this as is for
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(functionAppBaseUri)
+        .Build();
+
+        hubConnection.On<ClientMessage>("clientMessage", (clientMessage) =>
+        {
+            messages.Add(clientMessage);
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
+
+    public class ClientMessage
+    {
+        public string ImageUrl { get; set; }
+        public string Message { get; set; }
     }
 }
