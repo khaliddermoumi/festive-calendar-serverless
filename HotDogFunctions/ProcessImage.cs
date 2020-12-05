@@ -3,6 +3,9 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
+using Microsoft.Azure.WebJobs.Extensions.SignalRService;
+using Microsoft.Azure.Storage.Blob;
+using System.Threading.Tasks;
 
 namespace HotDogFunctions
 {
@@ -13,18 +16,28 @@ namespace HotDogFunctions
         private const string PredictionKey = "74f181dc48934a81937d185908e5c3d4";
 
         [FunctionName("ProcessImage")]
-        public static void Run([BlobTrigger("sample-images/{name}", Connection = "AzureStorage:ConnectionString")]Stream myBlob, string name, ILogger log)
+        public static Task Run([BlobTrigger("sample-images/{name}", Connection = "AzureStorage:ConnectionString")]Stream myBlob, [Blob("sample-images/{name}", FileAccess.ReadWrite, Connection = "AzureStorage:ConnectionString")] CloudBlockBlob blob, [SignalR(HubName = "HotDogHub")] IAsyncCollector<SignalRMessage> signalRMessages, ILogger log)
         {
-            log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
+            log.LogInformation($"C# Blob trigger function Processed blob\n Name:{blob.Name} \n Size: {myBlob.Length} Bytes");
 
             var client = AuthenticatePrediction(Endpoint, PredictionKey);
 
             var result = client.ClassifyImage(new Guid("17d67036-31ed-4e1e-acc6-57e147af7ac0"), "HotDogsDetectionModel", myBlob);
 
+            string resultStr = "";
             foreach (var c in result.Predictions)
             {
+
                 log.LogInformation($"\t{c.TagName}: {c.Probability:P1}");
+
+                resultStr += $"{c.TagName}: {c.Probability:P1} \n";
             }
+
+            return signalRMessages.AddAsync(new SignalRMessage
+            {
+                Target = "clientMessage",
+                Arguments = new[] { new ClientMessage { ImageUrl = blob.Uri.ToString(), Message = resultStr } }
+            });
         }
 
         private static CustomVisionPredictionClient AuthenticatePrediction(string endpoint, string predictionKey)
@@ -38,5 +51,11 @@ namespace HotDogFunctions
             return predictionApi;
         }
 
+    }
+
+    public class ClientMessage
+    {
+        public string ImageUrl { get; set; }
+        public string Message { get; set; }
     }
 }
