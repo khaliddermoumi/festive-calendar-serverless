@@ -1,59 +1,71 @@
 ﻿@page "/counter"
 
 @using Microsoft.AspNetCore.SignalR.Client
+@inject IHttpClientFactory ClientFactory
 
-<h1>@hubConnection.State</h1>
-
-<h3>Predictions</h3>
-
-<table>
-    <tr>
-        <th>
-            Image
-        </th>
-        <th>
-            Score
-        </th>
-    </tr>
-    @foreach (var message in messages)
-    {
+<h3>Hub State: @_hubConnection.State</h3>
+<br>
+<h3>Predictions List</h3>
+@if (_messages.Count > 0)
+{
+    <table>
         <tr>
-            <td>
-                <img src="@message.ImageUrl" width="100px" height="100px">
-                </td>
-            <td>@message.Message</td>
+            <th>
+                Image
+            </th>
+            <th>
+                Score
+            </th>
         </tr>
-    }
-</table>
-
+        @foreach (var message in _messages)
+        {
+            <tr>
+                <td>
+                    <img src="@message.ImageUrl" width="100px" height="100px">
+                </td>
+                <td>@message.Scores</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>Nothing to see here.</p>
+}
 
 @code {
-    private HubConnection hubConnection;
-    private List<ClientMessage> messages = new List<ClientMessage>();
+    private HubConnection _hubConnection;
+    private readonly List<ClientMessage> _messages = new List<ClientMessage>();
 
-
-    private readonly string functionAppBaseUri = "http://localhost:7071/api/"; //URL for function app. Leave this as is for
     protected override async Task OnInitializedAsync()
     {
-        hubConnection = new HubConnectionBuilder()
+        var httpClient = ClientFactory.CreateClient("HotDogApi");
+
+        var functionAppBaseUri = httpClient.BaseAddress?.ToString();
+
+        _hubConnection = new HubConnectionBuilder()
             .WithUrl(functionAppBaseUri)
         .Build();
 
-        hubConnection.On<ClientMessage>("clientMessage", (clientMessage) =>
+        _hubConnection.On<ClientMessage>("clientMessage", (clientMessage) =>
         {
-            messages.Add(clientMessage);
+            _messages.Add(clientMessage);
             StateHasChanged();
         });
 
-        await hubConnection.StartAsync();
+        await _hubConnection.StartAsync();
+
+        var list = await httpClient.GetFromJsonAsync<List<ClientMessage>>("list");
+
+        _messages.AddRange(list);
     }
 
     public bool IsConnected =>
-        hubConnection.State == HubConnectionState.Connected;
+        _hubConnection.State == HubConnectionState.Connected;
 
     public class ClientMessage
     {
         public string ImageUrl { get; set; }
-        public string Message { get; set; }
+        public string Scores { get; set; }
     }
 }

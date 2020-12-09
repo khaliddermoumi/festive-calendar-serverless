@@ -4,7 +4,8 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "AzureStorage:ConnectionString": "UseDevelopmentStorage=true",
-    "AzureSignalRConnectionString": "Endpoint=https://v1-joaogoncalves-signalr.service.signalr.net;AccessKey=w+YjbnFVJuZd2hoVuxQoXQiBlozhsUO1+LtTyfHeRQU=;Version=1.0;"
+    "AzureSignalRConnectionString": "Endpoint=https://v1-joaogoncalves-signalr.service.signalr.net;AccessKey=w+YjbnFVJuZd2hoVuxQoXQiBlozhsUO1+LtTyfHeRQU=;Version=1.0;",
+    "CosmosDBConnection": "AccountEndpoint=https://hotdogsstore.documents.azure.com:443/;AccountKey=GwtpHphYrND0dc9fbNNtw7lFzZc5gQVs4OUlCVNsqq27E5t8HnYOx1vqD9JejN9SDYEFkcdYevlBzTUwB5sJcg==;"
   },
   "Host": {
     "CORS": "*",
