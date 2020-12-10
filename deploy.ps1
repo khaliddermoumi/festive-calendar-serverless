@@ -11,6 +11,7 @@ Write-Output $serviceName
 Write-Output "### Creating Resource Group"
 az group create -n $resourceGroupName -l $location
 
+
 Write-Output "### Creating Azure SignalR"
 az signalr create --name $serviceName --resource-group $resourceGroupName --sku "Free_F1" --service-mode Serverless
 $signalRConnString=$(az signalr key list --name $serviceName --resource-group $resourceGroupName --query primaryConnectionString -o tsv)

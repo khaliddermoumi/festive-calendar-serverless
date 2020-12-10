@@ -19,7 +19,8 @@ namespace HotDogWebApp
             builder.Services.AddHttpClient("HotDogApi", client =>
                 client.BaseAddress =
                     new Uri(
-                        "http://localhost:7071/api/"));
+                        // "http://localhost:7071/api/"
+                        "https://hotdognothotdog997.azurewebsites.net/api/"));
             
             await builder.Build().RunAsync();
         }
