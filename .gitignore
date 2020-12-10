@@ -26,3 +26,6 @@ local.settings.json
 local.settings.json
 **/.terraform
 *.tfstate
+/.vscode
+/HotDogFunctions/Properties/PublishProfiles
+/HotDogFunctions/Properties/ServiceDependencies/hotdognothotdog997 - Zip Deploy

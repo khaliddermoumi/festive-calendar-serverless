@@ -16,7 +16,7 @@ namespace HotDogFunctions
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "upload")] HttpRequestMessage req,
             ILogger log,
-            [Blob("sample-images", FileAccess.Write, Connection = "AzureStorage:ConnectionString")] CloudBlobContainer cloudBlobContainer)
+            [Blob("sample-images", FileAccess.Write, Connection = "AzureStorageConnectionString")] CloudBlobContainer cloudBlobContainer)
         {
             await cloudBlobContainer.CreateIfNotExistsAsync();
 

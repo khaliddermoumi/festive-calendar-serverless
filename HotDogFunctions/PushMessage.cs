@@ -12,7 +12,8 @@ namespace HotDogFunctions
         public static void Run([CosmosDBTrigger(
             databaseName: "hotdogsphotos",
             collectionName: "photosclassification",
-            ConnectionStringSetting = "CosmosDBConnection")]IReadOnlyList<Document> input,
+            ConnectionStringSetting = "CosmosDBConnection", 
+            CreateLeaseCollectionIfNotExists = true)]IReadOnlyList<Document> input,
             [SignalR(HubName = "HotDogHub")] IAsyncCollector<SignalRMessage> signalRMessages,
             ILogger log)
         {

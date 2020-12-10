@@ -12,7 +12,7 @@ Write-Output "### Creating Resource Group"
 az group create -n $resourceGroupName -l $location
 
 Write-Output "### Creating Azure SignalR"
-az signalr create --name $serviceName --resource-group $resourceGroupName --sku "Free_F1"
+az signalr create --name $serviceName --resource-group $resourceGroupName --sku "Free_F1" --service-mode Serverless
 $signalRConnString=$(az signalr key list --name $serviceName --resource-group $resourceGroupName --query primaryConnectionString -o tsv)
 
 
@@ -33,10 +33,13 @@ az cosmosdb sql container create -a $serviceName -g $resourceGroupName -d $datab
 $cosmosConnString=$(az cosmosdb keys list -n $serviceName -g $resourceGroupName --type connection-strings --query "connectionStrings[0].connectionString" -o tsv)
 
 
+Write-Output "### Creating Azure Function"
+az functionapp create -g $resourceGroupName -n $serviceName -s $serviceName --consumption-plan-location $location --functions-version 3 --os-type Windows
+az functionapp cors remove -g $resourceGroupName -n $serviceName --allowed-origins
+az functionapp cors add -g $resourceGroupName -n $serviceName --allowed-origins "*"
+
+
 Write-Output "### Connection Strings"
-Write-Output "# SignalR"
-Write-Output $signalRConnString
-Write-Output "# Storage"
-Write-Output $storageConnString
-Write-Output "# Cosmos"
-Write-Output $cosmosConnString
+Write-Output ('"AzureSignalRConnectionString"'+":"+'"'+$signalRConnString+'"')
+Write-Output ('"AzureStorageConnectionString"'+":"+'"'+$storageConnString+'"')
+Write-Output ('"CosmosDBConnection"'+":"+'"'+$cosmosConnString+'"')

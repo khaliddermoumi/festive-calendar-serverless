@@ -13,16 +13,10 @@ namespace HotDogFunctions
 {
     public static class ProcessImage
     {
-        private const string Endpoint = "https://foodcustomvision.cognitiveservices.azure.com/";
-        private const string TrainingKey = "dcbea48f2c594c93adece1c63ff7cdaf";
-        private const string PredictionKey = "74f181dc48934a81937d185908e5c3d4";
-        private const string ProjectId = "17d67036-31ed-4e1e-acc6-57e147af7ac0";
-        private const string PublishedName = "HotDogsDetectionModel";
-
         [FunctionName("ProcessImage")]
         public static Task Run(
-            [BlobTrigger("sample-images/{name}", Connection = "AzureStorage:ConnectionString")] Stream myBlob, 
-            [Blob("sample-images/{name}", FileAccess.ReadWrite, Connection = "AzureStorage:ConnectionString")] CloudBlockBlob blob,
+            [BlobTrigger("sample-images/{name}", Connection = "AzureStorageConnectionString")] Stream myBlob, 
+            [Blob("sample-images/{name}", FileAccess.ReadWrite, Connection = "AzureStorageConnectionString")] CloudBlockBlob blob,
             [CosmosDB(
                 databaseName: "hotdogsphotos",
                 collectionName: "photosclassification",
@@ -32,9 +26,14 @@ namespace HotDogFunctions
             log.LogInformation(
                 $"C# Blob trigger function Processed blob\n Name:{blob.Name} \n Size: {myBlob.Length} Bytes");
 
-            var client = AuthenticatePrediction(Endpoint, PredictionKey);
-            
-            var result = client.ClassifyImage(new Guid(ProjectId), PublishedName,
+            var projectId = Environment.GetEnvironmentVariable("CustomVisionProjectId", EnvironmentVariableTarget.Process);
+            var publishedName = Environment.GetEnvironmentVariable("CustomVisionPublishedName", EnvironmentVariableTarget.Process);
+            var endpoint = Environment.GetEnvironmentVariable("CustomVisionEndpoint", EnvironmentVariableTarget.Process);
+            var predictionKey = Environment.GetEnvironmentVariable("CustomVisionPredictionKey", EnvironmentVariableTarget.Process);
+
+            var client = AuthenticatePrediction(endpoint, predictionKey);            
+
+            var result = client.ClassifyImage(new Guid(projectId), publishedName,
                 myBlob);
 
             var resultStr = result.Predictions.Select(c => $"{c.TagName}: {c.Probability:P1}").ToList();
