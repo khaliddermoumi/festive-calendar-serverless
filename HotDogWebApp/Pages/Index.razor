@@ -8,12 +8,11 @@
 <br>
 
 <h4>
-    @status
-    
+    @_status
 </h4>
 
 @code {
-    string status;
+    string _status;
 
     private async Task HandleSelection(InputFileChangeEventArgs e)
     {
@@ -21,32 +20,33 @@
         {
             var file = e.File;
 
-        var httpClient = ClientFactory.CreateClient("HotDogApi");
+            var httpClient = ClientFactory.CreateClient("HotDogApi");
 
-        var buffer = new byte[file.Size];
-        await file.OpenReadStream().ReadAsync(buffer);
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
 
-        var s = new MemoryStream();
-        await s.WriteAsync(buffer);
-        s.Position = 0;
+            var s = new MemoryStream();
+            await s.WriteAsync(buffer);
+            s.Position = 0;
 
-        var content = new MultipartFormDataContent
-        {
+            var content = new MultipartFormDataContent
             {
-                new ByteArrayContent(s.GetBuffer()),
-                "\"upload\"",
-                file.Name
-            }
-        };
+                {
+                    new ByteArrayContent(s.GetBuffer()),
+                    "\"upload\"",
+                    file.Name
+                }
+            };
 
-        await httpClient.PostAsync("upload", content);
+            await httpClient.PostAsync("upload", content);
 
-        status = $"Finished loading {file.Size} bytes from {file.Name}";
+            _status = $"Finished loading {file.Size} bytes from {file.Name}";
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            status = ex.Message;
+            _status = ex.Message;
             throw;
-        }        
+        }
     }
+
 }

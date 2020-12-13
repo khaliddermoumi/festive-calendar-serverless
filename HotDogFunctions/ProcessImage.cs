@@ -3,7 +3,6 @@ using Microsoft.Azure.Storage.Blob;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -33,7 +32,7 @@ namespace HotDogFunctions
 
             var client = AuthenticatePrediction(endpoint, predictionKey);            
 
-            var result = client.ClassifyImage(new Guid(projectId), publishedName,
+            var result = client.ClassifyImage(new Guid(projectId ?? string.Empty), publishedName,
                 myBlob);
 
             var resultStr = result.Predictions.Select(c => $"{c.TagName}: {c.Probability:P1}").ToList();
