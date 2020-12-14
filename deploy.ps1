@@ -40,7 +40,7 @@ az functionapp cors remove -g $resourceGroupName -n $serviceName --allowed-origi
 az functionapp cors add -g $resourceGroupName -n $serviceName --allowed-origins "*"
 
 
-Write-Output "### Connection Strings"
+Write-Output "### Connection Strings - !!! Copy these values to your notes !!!"
 Write-Output ('"AzureSignalRConnectionString"'+":"+'"'+$signalRConnString+'"')
 Write-Output ('"AzureStorageConnectionString"'+":"+'"'+$storageConnString+'"')
 Write-Output ('"CosmosDBConnection"'+":"+'"'+$cosmosConnString+'"')

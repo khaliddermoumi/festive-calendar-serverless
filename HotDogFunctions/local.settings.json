@@ -9,7 +9,8 @@
     "CustomVisionPublishedName": "HotDogsDetectionModel",
     "AzureSignalRConnectionString": "Endpoint=https://hotdognothotdog997.service.signalr.net;AccessKey=FlI982mEIGmVnBLJ3giYmeRaQK58LWvhYSwH5Vgmi5o=;Version=1.0;",
     "AzureStorageConnectionString": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=hotdognothotdog997;AccountKey=vUAK7lmKh9Dsy2vQHe0VhezM2zR5YH5DA31TKGhjhhqcvLr8rEBdsHVwfP7ttrK4HIukrEJaAYrpuZINjMUcEw==",
-    "CosmosDBConnection": "AccountEndpoint=https://hotdognothotdog997.documents.azure.com:443/;AccountKey=hUt7j0j2kmjWUfvyAQhaeSGGcYA0J1BAHkY6eIoEN2rBmboRPAcaEauiDUO2tyiu9PAJz3j4ToCUd8r6JwiC3g==;"
+    "CosmosDBConnection": "AccountEndpoint=https://hotdogsstore.documents.azure.com:443/;AccountKey=GwtpHphYrND0dc9fbNNtw7lFzZc5gQVs4OUlCVNsqq27E5t8HnYOx1vqD9JejN9SDYEFkcdYevlBzTUwB5sJcg==;",
+    "EventHubConnection": "Endpoint=sb://hotdogs-classification-streaming.servicebus.windows.net/;SharedAccessKeyName=hotdogs-classifications-sas;SharedAccessKey=PCxXuZB3xx1WdoCcIbjHjGr5XleJ8sEB8aKuxdG/O/Y=;EntityPath=classifications"
   },
   "Host": {
     "CORS": "*",
