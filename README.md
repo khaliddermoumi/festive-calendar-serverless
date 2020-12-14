@@ -1,20 +1,26 @@
 # Festive Calendar Serverless Workshop
 
-## Due 11th Dec
+## Agenda
+1. Introduction
+2. Slides
+   1. Overview
+   2. Context (Architecture Diagram)
+   3. Reference to previous session
+3. Workshop
+   1. Environment Configuration
+   2. Deploy Functions & Apps
+   3. Testing
+   4. Power BI
+4. Wrap-up
 
-- Create deployment script using Azure CLI (except Functions) (Joao) - **Done**
-- Create data store (Cosmos DB) to store data (Joao) - **Done**
-- Connect Cosmos DB with functions to persist data (Joao) - **Done**
-- Create Power BI environment/workspace (Hugo)
-- Create Power BI Dashboard w/ streaming source (real-time) (Hugo)
-- Create Azure Stream Analytics instance + job (Hugo)
-- Connect Stream Analytics with Power BI (Hugo)
-- Configure dashboard to show data (Power BI) (Hugo)
-
-## Due 13th Dec
-
-- Create Slides (Both)
-- Create document with all workshop steps (Both)
+## Prerequisites
+* Azure Subscription - https://azure.microsoft.com/en-us/free/
+* VS Code - https://code.visualstudio.com/Download (in case you prefer to use VS Code)
+* Visual Studio 2019 - https://visualstudio.microsoft.com/vs/ (in case you prefer to use Visual Studio)
+* Azure CLI - https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+* Azure Functions extension for Visual Studio Code - https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions
+* Azure Functions Core Tools - https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Ccsharp%2Cbash#v2
+* Git (https://git-scm.com/downloads)
 
 ## Steps
 
@@ -22,16 +28,16 @@
 
 1. Fork the repository
 2. Clone locally
-3. Run `deploy.ps1`
-   1. You need to have the Azure CLI installed
-   2. Authenticate using `az login`
-   3. The script will create the following:
+3. Authenticate using `az login`
+4. Get the details of the Azure subscription using `az account show`
+5. Run `deploy.ps1`
+   1. The script will create the following:
       1. Azure Resource Group
       2. Azure SignalR service
       3. Azure Storage Account
       4. Azure CosmosDB with Database and Container
       5. Azure Function
-4. Copy the generated connection strings at the bottom of the script
+6. Copy the generated connection strings at the bottom of the script
 
 ### Azure Function Preparation
 
@@ -54,7 +60,7 @@
     ```
 
 2. Start the Function App and check that it runs
-3. Deploy the function **(Visual Studio 2019)**:
+3. Deploy the function using **(Visual Studio 2019)**:
    1. In Visual Studio, right click the function app and click publish
    2. Go through the steps and select:
       1. Azure Function Windows
@@ -63,7 +69,9 @@
       4. Before publishing select **Manage Azure App Service Settings**
       5. Copy **Connection Strings and Custom Vision setting to Remote**
       6. Click Publish
-4. Once it's deployed Copy the Function App URL
+4. Deploy the function using **VS Code**
+   1. 
+5. Once it's deployed copy the Function App URL
 
 ### Web Application Preparation
 
@@ -79,7 +87,8 @@
     ```
 
 3. Start the Web App and check that it runs
-4. Deploy the function **(Azure Portal)**:
+
+4. Deploy the Web App using **(Azure Portal)**:
    1. Create new **Static Web App Preview** resource
    2. Select **Resource Group, Name and Region**
    3. Authorize **GitHub**
@@ -87,3 +96,28 @@
    5. Select **Blazor** as the build preset
    6. Change **App Location** to **HotDogWebApp**
    7. Create the website, this will create a `yaml` in your repository and use GitHub actions to trigger a deploy
+5. Deploy the Web App using **VS Code**:
+   1. Open Azure Extension
+   2. Navigate to Static Web Apps (Preview) section
+   3. Create a new *Static Web App*
+      1. Right click on your subscription listed in the section
+      2. Select *Create Static Web App (Advanced)* option
+      3. Select *Use existing Github repository* option
+      4. Select your organization
+      5. Select the cloned repository
+      6. Select *master* branch
+      7. Provide a name for your Web App
+      8. Select the resource group created previously
+      9. Select Blazor as the project type
+      10. Select the location
+   4.  Modify Workflow file from Github or modify workflow locally by running `git pull` and accessing the workflow file located in the `.github\workflows` folder
+       1.  Access your repository on Github
+       2.  Select menu option *Actions*
+       3.  Select the existing deployment
+       4.  Select the three elipses option on the top right corner
+       5.  Select *View workflow file* option
+       6.  Select the pencil to edit the workflow file
+       7.  Modify the *app_location* parameter from `Client` to `HotDogWebApp`
+   5.  Navigate to the Azure Portal, locate your Static Web App, and browse the App
+   6.  Upload one or more images (with hotdogs or without hotdogs)
+   7.  Access the List option (on the left menu) to list the photos uploaded, and ensure your photo is showing up.
