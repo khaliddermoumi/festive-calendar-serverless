@@ -49,7 +49,7 @@ else
 
         _hubConnection.On<ClientMessage>("clientMessage", (clientMessage) =>
         {
-            _messages.Add(clientMessage);
+            _messages.Insert(0, clientMessage);
             StateHasChanged();
         });
 

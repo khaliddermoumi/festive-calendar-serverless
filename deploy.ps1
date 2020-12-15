@@ -38,7 +38,9 @@ Write-Output "### Creating Azure Function"
 az functionapp create -g $resourceGroupName -n $serviceName -s $serviceName --consumption-plan-location $location --functions-version 3 --os-type Windows
 az functionapp cors remove -g $resourceGroupName -n $serviceName --allowed-origins
 az functionapp cors add -g $resourceGroupName -n $serviceName --allowed-origins "*"
-
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "AzureSignalRConnectionString=$signalRConnString"
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "AzureStorageConnectionString=$storageConnString"
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CosmosDBConnection=$cosmosConnString"
 
 Write-Output "### Connection Strings"
 Write-Output ('"AzureSignalRConnectionString"'+":"+'"'+$signalRConnString+'"')
