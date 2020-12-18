@@ -1,6 +1,6 @@
 $location="northeurope"
 $resourceGroupName="advent-fest-demo"
-$systemName="hotdognothotdog"
+$systemName="hotdoganalysis"
 
 # Generate a unique suffix for the service name
 $randomNum=Get-Random -Maximum 1000 -Minimum 100
@@ -41,6 +41,11 @@ az functionapp cors add -g $resourceGroupName -n $serviceName --allowed-origins 
 az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "AzureSignalRConnectionString=$signalRConnString"
 az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "AzureStorageConnectionString=$storageConnString"
 az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CosmosDBConnection=$cosmosConnString"
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CustomVisionProjectId=17d67036-31ed-4e1e-acc6-57e147af7ac0"
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CustomVisionPublishedName=HotDogsDetectionModel"
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CustomVisionEndpoint=https://foodcustomvision.cognitiveservices.azure.com/"
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CustomVisionPredictionKey=74f181dc48934a81937d185908e5c3d4"
+
 
 Write-Output "### Connection Strings"
 Write-Output ('"AzureSignalRConnectionString"'+":"+'"'+$signalRConnString+'"')
