@@ -4,7 +4,7 @@
 
 <h3>Upload</h3>
 
-<InputFile OnChange="@HandleSelection"/>
+<InputFile OnChange="@HandleSelection" multiple/>
 <br>
 
 <h4>
@@ -18,29 +18,32 @@
     {
         try
         {
-            var file = e.File;
-
-            var httpClient = ClientFactory.CreateClient("HotDogApi");
-
-            var buffer = new byte[file.Size];
-            await file.OpenReadStream().ReadAsync(buffer);
-
-            var s = new MemoryStream();
-            await s.WriteAsync(buffer);
-            s.Position = 0;
-
-            var content = new MultipartFormDataContent
+            _status = String.Empty;
+            
+            foreach (var file in e.GetMultipleFiles(20))
             {
+                var httpClient = ClientFactory.CreateClient("HotDogApi");
+
+                var buffer = new byte[file.Size];
+                await file.OpenReadStream(long.MaxValue).ReadAsync(buffer);
+
+                var s = new MemoryStream();
+                await s.WriteAsync(buffer);
+                s.Position = 0;
+
+                var content = new MultipartFormDataContent
                 {
-                    new ByteArrayContent(s.GetBuffer()),
-                    "\"upload\"",
-                    file.Name
-                }
-            };
+                    {
+                        new ByteArrayContent(s.GetBuffer()),
+                        "\"upload\"",
+                        file.Name
+                    }
+                };
 
-            await httpClient.PostAsync("upload", content);
+                await httpClient.PostAsync("upload", content);
 
-            _status = $"Finished loading {file.Size} bytes from {file.Name}";
+                _status += $"Finished loading {file.Size} bytes from {file.Name}\n";
+            }
         }
         catch (Exception ex)
         {
