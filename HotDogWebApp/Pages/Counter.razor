@@ -21,9 +21,12 @@
         {
             <tr>
                 <td>
-                    <img src="@message.ImageUrl" width="100px" height="100px">
+                    <img src="@(message.ImageUrl)" width="100px" height="100px">
                 </td>
-                <td>@message.Scores</td>
+                <td>
+                    <p>Hot Dog Score: <b>@($"{message.HotDog:P1}")</b></p>
+                    <p>Not Hot Dog Score: <b>@($"{message.NonHotDog:P1}")</b></p>
+                </td>
             </tr>
         }
     </table>
@@ -44,14 +47,14 @@ else
         var functionAppBaseUri = httpClient.BaseAddress?.ToString();
 
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(functionAppBaseUri)
-        .Build();
+                            .WithUrl(functionAppBaseUri)
+                        .Build();
 
         _hubConnection.On<ClientMessage>("clientMessage", (clientMessage) =>
-        {
-            _messages.Insert(0, clientMessage);
-            StateHasChanged();
-        });
+                        {
+                        _messages.Insert(0, clientMessage);
+                        StateHasChanged();
+                    });
 
         await _hubConnection.StartAsync();
 
@@ -61,11 +64,13 @@ else
     }
 
     public bool IsConnected =>
-        _hubConnection.State == HubConnectionState.Connected;
+                        _hubConnection.State == HubConnectionState.Connected;
 
     public class ClientMessage
     {
         public string ImageUrl { get; set; }
-        public string Scores { get; set; }
+        public double HotDog { get; set; }
+        public double NonHotDog { get; set; }
     }
+
 }

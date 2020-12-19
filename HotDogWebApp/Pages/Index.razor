@@ -4,22 +4,26 @@
 
 <h3>Upload</h3>
 
-<InputFile OnChange="@HandleSelection" multiple/>
+<InputFile OnChange="@HandleSelection" multiple />
+<br>
 <br>
 
-<h4>
-    @_status
-</h4>
+
+@foreach (var message in _messages)
+{
+    <p>
+        @message
+    </p>
+}
 
 @code {
-    string _status;
+    private readonly List<string> _messages = new List<string>();
+
 
     private async Task HandleSelection(InputFileChangeEventArgs e)
     {
         try
         {
-            _status = String.Empty;
-            
             foreach (var file in e.GetMultipleFiles(20))
             {
                 var httpClient = ClientFactory.CreateClient("HotDogApi");
@@ -42,12 +46,12 @@
 
                 await httpClient.PostAsync("upload", content);
 
-                _status += $"Finished loading {file.Size} bytes from {file.Name}\n";
+                _messages.Add($"Finished loading {file.Size} bytes from {file.Name}");
             }
         }
         catch (Exception ex)
         {
-            _status = ex.Message;
+            _messages.Add(ex.Message);
             throw;
         }
     }

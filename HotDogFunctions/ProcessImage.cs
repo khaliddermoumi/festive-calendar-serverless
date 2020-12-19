@@ -2,14 +2,11 @@ using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace HotDogFunctions
@@ -38,17 +35,13 @@ namespace HotDogFunctions
 
             var result = client.ClassifyImage(new Guid(projectId ?? string.Empty), publishedName,
                 myBlob);
-
-            // var resultStr = result.Predictions.Select(c => $"{c.TagName}: {c.Probability}").ToList();
-
-            // var jsonString = JsonSerializer.Serialize(resultStr);
-            var dynamicObject = new ExpandoObject() as IDictionary<string, Object>;
+            
+            var dynamicObject = new ExpandoObject() as IDictionary<string, object>;
             dynamicObject.TryAdd("ImageUrl", blob.Uri.ToString());
             dynamicObject.TryAdd("Id", Guid.NewGuid());
 
-
-            foreach(var pred in result.Predictions){
-                dynamicObject.TryAdd(pred.TagName, pred.Probability);
+            foreach(var prediction in result.Predictions){
+                dynamicObject.TryAdd(string.Concat(prediction.TagName.Where(c => !char.IsWhiteSpace(c))), prediction.Probability);
             }
 
             document = dynamicObject;

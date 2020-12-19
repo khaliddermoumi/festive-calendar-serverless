@@ -5,13 +5,14 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 
 namespace HotDogFunctions
 {
     public static class PushMessage
     {
-        private static readonly HttpClient client = new HttpClient();
+        private static readonly HttpClient HttpClient = new HttpClient();
 
         [FunctionName("PushMessage")]
         public static void Run([CosmosDBTrigger(
@@ -29,17 +30,12 @@ namespace HotDogFunctions
 
             foreach (var item in input)
             {
-                var imageUrl = item.GetPropertyValue<string>("ImageUrl");
-                var hotdogScore = item.GetPropertyValue<string>("Hot Dog");
-                var nonHotdogScore = item.GetPropertyValue<string>("Non Hot Dog");
+                var imageUrl = item.GetPropertyValue<string>(nameof(ClientMessage.ImageUrl));
+                var hotdogScore = item.GetPropertyValue<double>(nameof(ClientMessage.HotDog));
+                var nonHotdogScore = item.GetPropertyValue<double>(nameof(ClientMessage.NonHotDog));
 
-                signalRMessages.AddAsync(new SignalRMessage
-                {
-                    Target = "clientMessage",
-                    Arguments = new object[] { new ClientMessage { ImageUrl = imageUrl, HotdogScore = hotdogScore, NonHotdogScore = nonHotdogScore } }
-                });
+                var powerBiHotDogsApi = Environment.GetEnvironmentVariable("PowerBIHotDogsApi", EnvironmentVariableTarget.Process);
 
-                var powerBIHotDogsApi = Environment.GetEnvironmentVariable("PowerBIHotDogsApi", EnvironmentVariableTarget.Process);
                 var values = new Dictionary<string, dynamic>
                 {
                     { "HotdogScore", hotdogScore },
@@ -49,15 +45,29 @@ namespace HotDogFunctions
                     { "PhotoDate", DateTime.UtcNow }
                 };
 
-                log.LogInformation($"Timestamp: {DateTime.UtcNow.ToString()}");
+                signalRMessages.AddAsync(new SignalRMessage
+                {
+                    Target = "clientMessage",
+                    Arguments = new object[]
+                   {
+                        new ClientMessage
+                        {
+                            ImageUrl = imageUrl, 
+                            HotDog = hotdogScore, 
+                            NonHotDog = nonHotdogScore
+                        }
+                   }
+                });
+
+                log.LogInformation($"Timestamp: {DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)}");
 
                 var content = new StringContent($"[{JsonConvert.SerializeObject(values)}]");
 
-                var response = client.PostAsync(powerBIHotDogsApi, content).GetAwaiter().GetResult();
+                var response = HttpClient.PostAsync(powerBiHotDogsApi, content).GetAwaiter().GetResult();
 
                 var responseString = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                log.LogInformation($"Power BI API Request Result: {String.Concat(response.StatusCode,responseString)}");
+                log.LogInformation($"Power BI API Request Result: {string.Concat(response.StatusCode, responseString)}");
             }
         }
     }

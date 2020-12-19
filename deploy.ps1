@@ -28,7 +28,7 @@ Write-Output "### Creating CosmosDB"
 $databaseName="hotdogsphotos"
 $containerName="photosclassification"
 
-az cosmosdb create -n $serviceName -g $resourceGroupName
+az cosmosdb create -n $serviceName -g $resourceGroupName --enable-free-tier
 az cosmosdb sql database create -a $serviceName -g $resourceGroupName -n $databaseName
 az cosmosdb sql container create -a $serviceName -g $resourceGroupName -d $databaseName -n $containerName -p '/key'
 $cosmosConnString=$(az cosmosdb keys list -n $serviceName -g $resourceGroupName --type connection-strings --query "connectionStrings[0].connectionString" -o tsv)
@@ -45,7 +45,7 @@ az functionapp config appsettings set --name $serviceName --resource-group $reso
 az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CustomVisionPublishedName=HotDogsDetectionModel"
 az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CustomVisionEndpoint=https://foodcustomvision.cognitiveservices.azure.com/"
 az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "CustomVisionPredictionKey=74f181dc48934a81937d185908e5c3d4"
-
+az functionapp config appsettings set --name $serviceName --resource-group $resourceGroupName --settings "PowerBIHotDogsApi=https://api.powerbi.com/beta/12bec8d7-324b-410c-ab22-58f935feab3f/datasets/7d2cc9cb-17dc-4efb-bd89-8993bcefb728/rows?key=oqpiLYQrR61xdBdULUVxX0Qle4y7E94CW6wfcLgfm7pku97cz9TAteV6c7bj7hxktE63l1c0gqGlsW9uCkTgBQ%3D%3D"
 
 Write-Output "### Connection Strings"
 Write-Output ('"AzureSignalRConnectionString"'+":"+'"'+$signalRConnString+'"')
