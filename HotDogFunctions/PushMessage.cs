@@ -17,7 +17,7 @@ namespace HotDogFunctions
         public static void Run([CosmosDBTrigger(
             databaseName: "hotdogsphotos",
             collectionName: "photosclassification",
-            ConnectionStringSetting = "CosmosDBConnection", 
+            ConnectionStringSetting = "CosmosDBConnection",
             CreateLeaseCollectionIfNotExists = true)]IReadOnlyList<Document> input,
             [SignalR(HubName = "HotDogHub")] IAsyncCollector<SignalRMessage> signalRMessages,
             ILogger log)
@@ -40,13 +40,16 @@ namespace HotDogFunctions
                 });
 
                 var powerBIHotDogsApi = Environment.GetEnvironmentVariable("PowerBIHotDogsApi", EnvironmentVariableTarget.Process);
-                var values = new Dictionary<string, string>
+                var values = new Dictionary<string, dynamic>
                 {
                     { "HotdogScore", hotdogScore },
                     { "NonHotdogScore", nonHotdogScore },
                     { "Id", item.Id },
                     { "Url", imageUrl },
+                    { "PhotoDate", DateTime.UtcNow }
                 };
+
+                log.LogInformation($"Timestamp: {DateTime.UtcNow.ToString()}");
 
                 var content = new StringContent($"[{JsonConvert.SerializeObject(values)}]");
 
@@ -54,7 +57,7 @@ namespace HotDogFunctions
 
                 var responseString = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-
+                log.LogInformation($"Power BI API Request Result: {String.Concat(response.StatusCode,responseString)}");
             }
         }
     }
