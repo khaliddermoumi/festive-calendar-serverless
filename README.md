@@ -22,6 +22,7 @@
 * Azure CLI - <https://docs.microsoft.com/en-us/cli/azure/install-azure-cli>
 * Azure Functions extension for Visual Studio Code - <https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions>
 * Azure Functions Core Tools - <https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Ccsharp%2Cbash#v2>
+* PowerShell Core - <https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.1>
 * Git - <https://git-scm.com/downloads>
 
 ## Steps
@@ -57,7 +58,8 @@
         "CustomVisionPublishedName": "HotDogsDetectionModel",
         "AzureSignalRConnectionString": "xxxxx",
         "AzureStorageConnectionString": "xxxxx",
-        "CosmosDBConnection": "xxxxx"
+        "CosmosDBConnection": "xxxxx",
+        "PowerBIHotDogsApi": "https://api.powerbi.com/beta/12bec8d7-324b-410c-ab22-58f935feab3f/datasets/7d2cc9cb-17dc-4efb-bd89-8993bcefb728/rows?key=oqpiLYQrR61xdBdULUVxX0Qle4y7E94CW6wfcLgfm7pku97cz9TAteV6c7bj7hxktE63l1c0gqGlsW9uCkTgBQ%3D%3D"
         }
     ```
 
