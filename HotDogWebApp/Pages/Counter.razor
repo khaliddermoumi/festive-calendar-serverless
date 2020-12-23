@@ -9,19 +9,19 @@
 @if (_messages.Count > 0)
 {
     <table>
-        <tr>
-            <th>
-                Image
-            </th>
-            <th>
-                Score
-            </th>
-        </tr>
-        @foreach (var message in _messages)
+    <tr>
+        <th>
+            Image
+        </th>
+        <th>
+            Score
+        </th>
+    </tr>
+    @foreach (var message in _messages)
         {
             <tr>
                 <td>
-                    <img src="@(message.ImageUrl)" width="100px" height="100px">
+                    <img src="@(message.ImageUrl)" height="100px">
                 </td>
                 <td>
                     <p>Hot Dog Score: <b>@($"{message.HotDog:P1}")</b></p>
@@ -47,14 +47,14 @@ else
         var functionAppBaseUri = httpClient.BaseAddress?.ToString();
 
         _hubConnection = new HubConnectionBuilder()
-                            .WithUrl(functionAppBaseUri)
-                        .Build();
+            .WithUrl(functionAppBaseUri)
+            .Build();
 
         _hubConnection.On<ClientMessage>("clientMessage", (clientMessage) =>
-                        {
-                        _messages.Insert(0, clientMessage);
-                        StateHasChanged();
-                    });
+            {
+            _messages.Insert(0, clientMessage);
+            StateHasChanged();
+        });
 
         await _hubConnection.StartAsync();
 
@@ -64,7 +64,7 @@ else
     }
 
     public bool IsConnected =>
-                        _hubConnection.State == HubConnectionState.Connected;
+        _hubConnection.State == HubConnectionState.Connected;
 
     public class ClientMessage
     {
